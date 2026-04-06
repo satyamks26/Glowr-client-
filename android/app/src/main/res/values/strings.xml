@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Glowr</string>
+    <string name="title_activity_main">Glowr</string>
+    <string name="package_name">com.glowr.app</string>
+    <string name="custom_url_scheme">com.glowr.app</string>
+</resources>
