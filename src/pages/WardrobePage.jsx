@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import axios from 'axios';
+import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -12,20 +12,37 @@ export default function WardrobePage() {
     const [result, setResult] = useState(null);
     const { language } = useAuth();
 
-    useEffect(() => {
-        fetchGarments();
-    }, []);
-    const handleFileChange = (e) => {
-        const selected = e.target.files[0];
-        if (selected) {
-            setFile(selected);
-            setPreview(URL.createObjectURL(selected));
+    const fetchGarments = async () => {
+        try {
+            const res = await api.get('/api/wardrobe');
+            setGarments(res.data);
+        } catch (err) {
+            console.error(err);
         }
     };
 
+    useEffect(() => {
+        fetchGarments();
+    }, []);
+
+    const onDrop = useCallback(acceptedFiles => {
+        const selected = acceptedFiles[0];
+        if (selected) {
+            setFile(selected);
+            setPreview(URL.createObjectURL(selected));
+            setResult(null);
+        }
+    }, []);
+
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop,
+        accept: { 'image/*': [] },
+        multiple: false
+    });
+
     const handleAnalyze = async () => {
         if (!file) return;
-        setAnalyzing(true);
+        setLoading(true);
         setResult(null);
 
         const formData = new FormData();
@@ -36,10 +53,11 @@ export default function WardrobePage() {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
             setResult(res.data);
+            fetchGarments();
         } catch (err) {
             alert(language === 'hi' ? 'विश्लेषण विफल रहा' : 'Analysis failed');
         } finally {
-            setAnalyzing(false);
+            setLoading(false);
         }
     };
 
