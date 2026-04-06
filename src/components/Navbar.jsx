@@ -57,6 +57,23 @@ export default function Navbar() {
                     <button className="btn-lang-toggle" onClick={toggleLanguage}>
                         {language === 'en' ? '🇮🇳 हिंदी' : '🇬🇧 English'}
                     </button>
+                    <button
+                        className="btn-share"
+                        onClick={() => {
+                            if (navigator.share) {
+                                navigator.share({
+                                    title: 'Glowr AI',
+                                    text: 'Check out this AI Style Consultant!',
+                                    url: window.location.origin
+                                });
+                            } else {
+                                navigator.clipboard.writeText(window.location.origin);
+                                alert('Link copied to clipboard!');
+                            }
+                        }}
+                    >
+                        📤 {language === 'en' ? 'Share' : 'शेयर'}
+                    </button>
                     <div className="nav-user">
                         <span className="user-initial">{user.name?.[0]?.toUpperCase() || 'U'}</span>
                         <button className="btn-logout" onClick={handleLogout}>
