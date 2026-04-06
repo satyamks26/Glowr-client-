@@ -1720,6 +1720,29 @@ body {
 }
 
 @media (max-width: 600px) {
+  .navbar {
+    padding: 0 1rem;
+    gap: 1rem;
+  }
+
+  .nav-links {
+    gap: 1rem;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    mask-image: linear-gradient(to right, black 85%, transparent 100%);
+  }
+
+  .nav-link {
+    font-size: 0.85rem;
+  }
+
+  .btn-lang-toggle {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+  }
+
   .premium-features-row {
     grid-template-columns: 1fr;
   }
