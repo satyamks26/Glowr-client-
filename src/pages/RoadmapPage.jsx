@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -15,9 +15,7 @@ export default function RoadmapPage() {
 
     const fetchRoadmap = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/roadmap`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('glowr_token')}` }
-            });
+            const res = await api.get('/api/roadmap');
             setRoadmap(res.data);
         } catch (err) {
             console.error(err);
@@ -29,12 +27,10 @@ export default function RoadmapPage() {
     const handleGenerate = async () => {
         setGenerating(true);
         try {
-            const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/roadmap/generate`, {}, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('glowr_token')}` }
-            });
+            const res = await api.post('/api/roadmap/generate', {});
             setRoadmap(res.data);
         } catch (err) {
-            alert(err.response?.data?.message || 'Failed to generate roadmap');
+            alert(language === 'hi' ? 'रोडमैप बनाने में विफल' : 'Failed to generate roadmap');
         } finally {
             setGenerating(false);
         }

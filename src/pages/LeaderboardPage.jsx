@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 
@@ -11,7 +11,7 @@ export default function LeaderboardPage() {
     useEffect(() => {
         const fetchLeaders = async () => {
             try {
-                const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/leaderboard`);
+                const res = await api.get('/api/leaderboard');
                 setLeaders(res.data);
             } catch (err) {
                 console.error(err);

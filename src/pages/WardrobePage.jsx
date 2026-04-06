@@ -15,49 +15,31 @@ export default function WardrobePage() {
     useEffect(() => {
         fetchGarments();
     }, []);
-
-    const fetchGarments = async () => {
-        try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/wardrobe`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('glowr_token')}` }
-            });
-            setGarments(res.data);
-        } catch (err) {
-            console.error(err);
+    const handleFileChange = (e) => {
+        const selected = e.target.files[0];
+        if (selected) {
+            setFile(selected);
+            setPreview(URL.createObjectURL(selected));
         }
     };
 
-    const onDrop = useCallback(acceptedFiles => {
-        const selectedFile = acceptedFiles[0];
-        setFile(selectedFile);
-        setPreview(URL.createObjectURL(selectedFile));
-        setResult(null);
-    }, []);
-
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({
-        onDrop,
-        accept: { 'image/*': [] },
-        multiple: false
-    });
-
     const handleAnalyze = async () => {
         if (!file) return;
-        setLoading(true);
+        setAnalyzing(true);
+        setResult(null);
+
+        const formData = new FormData();
+        formData.append('image', file);
+
         try {
-            const formData = new FormData();
-            formData.append('photo', file);
-            const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/wardrobe/analyze`, formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer ${localStorage.getItem('glowr_token')}`
-                }
+            const res = await api.post('/api/wardrobe/analyze', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
             });
             setResult(res.data);
-            fetchGarments();
         } catch (err) {
-            alert(err.response?.data?.message || 'Analysis failed');
+            alert(language === 'hi' ? 'विश्लेषण विफल रहा' : 'Analysis failed');
         } finally {
-            setLoading(false);
+            setAnalyzing(false);
         }
     };
 

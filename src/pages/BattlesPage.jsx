@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -17,9 +17,7 @@ export default function BattlesPage() {
 
     const fetchNextBattle = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/battles/vote`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('glowr_token')}` }
-            });
+            const res = await api.get('/api/battles/vote');
             setBattle(res.data);
         } catch (err) {
             console.error(err);
@@ -30,9 +28,7 @@ export default function BattlesPage() {
 
     const fetchMyBattleStatus = async () => {
         try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/battles/status`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('glowr_token')}` }
-            });
+            const res = await api.get('/api/battles/status');
             setMyBattle(res.data);
         } catch (err) {
             console.error(err);
@@ -42,11 +38,9 @@ export default function BattlesPage() {
     const handleVote = async (winner) => {
         if (!battle) return;
         try {
-            await axios.post(`${import.meta.env.VITE_API_URL}/api/battles/submit`, {
+            await api.post('/api/battles/submit', {
                 battleId: battle._id,
                 winner
-            }, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('glowr_token')}` }
             });
             setStatus(language === 'hi' ? 'वोट दर्ज हो गया!' : 'Vote Cast!');
             setTimeout(() => {
@@ -60,9 +54,7 @@ export default function BattlesPage() {
 
     const handleJoin = async () => {
         try {
-            await axios.post(`${import.meta.env.VITE_API_URL}/api/battles/join`, {}, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('glowr_token')}` }
-            });
+            await api.post('/api/battles/join', {});
             alert(language === 'hi' ? 'आप अखाड़े में शामिल हो गए हैं!' : 'You joined the arena!');
             fetchMyBattleStatus();
         } catch (err) {
